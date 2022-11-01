@@ -8,14 +8,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
-app.get('/', (req, res) => {
-  res.send('Express is here');
-});
-
 app.post('/create', (req, res) => {
   console.log(req.body);
   res.send(req.body);
 });
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'));
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
 
 app.listen(3001, function () {
   console.log('Server is running');
